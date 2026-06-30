@@ -1,0 +1,115 @@
+// This is your Prisma schema file
+// Learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// =============================================
+// MULTI-TENANT: Clientes / Tenants
+// =============================================
+model Client {
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  phone       String?
+  businessName String?
+  niche       String?  // ex: "odontologia", "advocacia"
+  logoUrl     String?
+  brandColors Json?    // { primary: "#7C3AED", secondary: "#EC4899" }
+  instagramHandle String?
+  facebookPageId  String?
+  plan        Plan     @default(STARTER)
+  active      Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Tokens Meta API
+  metaAccessToken  String?
+  metaTokenExpires DateTime?
+
+  posts Post[]
+  users User[]
+
+  @@map("clients")
+}
+
+// =============================================
+// USUARIOS
+// =============================================
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String?
+  password  String?
+  role      Role     @default(CLIENT)
+  clientId  String?
+  client    Client?  @relation(fields: [clientId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}
+
+// =============================================
+// POSTS
+// =============================================
+model Post {
+  id          String     @id @default(cuid())
+  clientId    String
+  client      Client     @relation(fields: [clientId], references: [id])
+  type        PostType
+  status      PostStatus @default(PENDING)
+  prompt      String
+  caption     String?
+  hashtags    String[]
+  mediaUrl    String?
+  thumbnailUrl String?
+  platform    String[]   // ["instagram", "facebook"]
+  scheduledAt DateTime?
+  publishedAt DateTime?
+  instagramPostId String?
+  facebookPostId  String?
+  error       String?
+  metadata    Json?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+
+  @@map("posts")
+}
+
+// =============================================
+// ENUMS
+// =============================================
+enum Plan {
+  STARTER
+  GROWTH
+  SCALE
+}
+
+enum Role {
+  ADMIN
+  CLIENT
+}
+
+enum PostType {
+  IMAGE
+  CAROUSEL
+  VIDEO
+  REEL
+}
+
+enum PostStatus {
+  PENDING
+  GENERATING
+  READY
+  APPROVED
+  SCHEDULED
+  PUBLISHED
+  FAILED
+}

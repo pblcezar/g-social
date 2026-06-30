@@ -5,10 +5,13 @@
 * Projeto Next.js 14 (App Router, TypeScript) criado em `c:\Arquivos Pablo\Arquivos Genesys Tech\Repositórios\g-social`
 * Design system premium dark mode configurado em `globals.css` (tokens CSS, animações, componentes base)
 * Landing Page pública funcional com: Hero, Features, How it Works, Plans, CTA, Footer
+* Rotas de autenticação inicializadas: `/login` e `/signup` com formulários estilizados
 * Prisma ORM inicializado com schema multi-tenant (Client, User, Post, enums)
 * BullMQ configurado com 2 filas: `media-generation` e `social-publish`
 * `.env.local` criado com template de todas as variáveis necessárias
+* Skill **UI/UX Pro Max** instalada localmente no projeto em `.agents/skills`
 * Repositório Git conectado ao remote `https://github.com/pblcezar/g-social.git`
+
 
 ---
 
